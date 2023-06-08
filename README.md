@@ -9,5 +9,7 @@ To create a chatbot that is specifically trained on the Azure SDK documentation 
 
 ## References
 
+- [vitejs.dev](https://vitejs.dev/guide/)
 - [github.com/chatscope](https://github.com/chatscope/chat-ui-kit-react)
 - [github.com/coopercodes](https://github.com/coopercodes/ReactChatGPTChatbot/blob/main)
+- [handling-cors-with-node-js/](https://stackabuse.com/handling-cors-with-node-js/)
