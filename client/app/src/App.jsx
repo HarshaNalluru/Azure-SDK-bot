@@ -58,7 +58,7 @@ function App() {
   return (
     <div className="App">
       <div style={{ position: "relative", height: "800px", width: "700px" }}>
-        <h3> Hello and welcome to the Azure SDK chat bot based on OpenAI 🐬</h3>
+        <h3> Welcome to the Azure SDK chat bot based on OpenAI 🐬</h3>
         <MainContainer>
           <ChatContainer>
             <MessageList
@@ -70,7 +70,7 @@ function App() {
                 return <Message model={message} key={index} />;
               })}
             </MessageList>
-            <MessageInput placeholder="Type Message..." onSend={handleSend} />
+            <MessageInput placeholder="Type your message..." onSend={handleSend} />
           </ChatContainer>
         </MainContainer>
       </div>
