@@ -1,5 +1,4 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
 import "./App.css";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import {
@@ -32,7 +31,29 @@ function App() {
     // set typing indicator (bot is typing)
     setTyping(true);
     // process message to server (send and get response)
+    await processMessageToServer(newMessages);
   };
+
+  async function processMessageToServer(chatMessages) {
+    console.log("message sent: \n", chatMessages);
+    const response = await fetch("http://localhost:8080/sample_response", {
+      method: "POST",
+      body: JSON.stringify(chatMessages),
+    });
+    console.log("response: ", response);
+    const data = await response.json();
+    console.log("message received: \n", data);
+    // set typing indicator (bot is not typing)
+    setTyping(false);
+    // update messages state
+    setMessages([
+      ...chatMessages,
+      {
+        message: data.val,
+        sender: "bot",
+      },
+    ]);
+  }
 
   return (
     <div className="App">
