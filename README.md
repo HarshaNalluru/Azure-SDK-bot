@@ -9,9 +9,9 @@ To create a chatbot that is specifically trained on the Azure SDK documentation 
 
 ## Commands
 ### Client
-    - `npm run dev` - run the development server
+`npm run dev` - run the development server
 ### Server
-    - `npm run start` - run the server
+`npm run start` - run the server
 
 ## References
 
