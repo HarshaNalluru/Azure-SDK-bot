@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node server.ts",
-    "dev": "ts-node-dev --respawn --transpile-only server.ts"
+    "dev": "ts-node-dev --respawn --transpile-only server.ts",
+    "dev:debug": "ts-node-dev --transpile-only --respawn --inspect=4321 server.ts"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +14,7 @@
   "dependencies": {
     "@azure/openai": "^1.0.0-beta.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.1.4",
     "express": "^4.16.3",
     "uuid": "^9.0.0"
   },

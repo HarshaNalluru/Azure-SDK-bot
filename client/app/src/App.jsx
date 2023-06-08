@@ -36,7 +36,7 @@ function App() {
 
   async function processMessageToServer(chatMessages) {
     console.log("message sent: \n", chatMessages);
-    const response = await fetch("http://localhost:8080/sample_response", {
+    const response = await fetch("http://localhost:8080/question", {
       method: "POST",
       body: JSON.stringify(chatMessages),
     });
