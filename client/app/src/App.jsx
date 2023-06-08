@@ -58,6 +58,7 @@ function App() {
   return (
     <div className="App">
       <div style={{ position: "relative", height: "800px", width: "700px" }}>
+        <h3> Hello and welcome to the Azure SDK chat bot based on OpenAI 🐬</h3>
         <MainContainer>
           <ChatContainer>
             <MessageList
