@@ -1,4 +1,4 @@
-import { AzureKeyCredential, ChatMessage, OpenAIClient } from "@azure/openai";
+import { AzureKeyCredential, ChatCompletions, ChatMessage, OpenAIClient } from "@azure/openai";
 import { Message } from "./models";
 
 export class AIClient {
@@ -11,7 +11,7 @@ export class AIClient {
     }
 
     async getSamples($conversation: Array<Message>): Promise<Message[]> {
-        const prompts: ChatMessage[] = [];
+        const prompts = new Array<ChatMessage>();
         for (let i = 0; i < $conversation.length; i++) {
             const m: Message = $conversation[i];
 
@@ -21,12 +21,17 @@ export class AIClient {
             });
         }
 
-        const completions = await this.client.getChatCompletions(this.model, prompts, {
-            maxTokens: 300,
-            n: 10
-        });
-
         const results = new Array<Message>();
+        let completions: ChatCompletions;
+        try {
+            completions = await this.client.getChatCompletions(this.model, prompts, {
+                maxTokens: 300,
+                n: 10
+            });
+        } catch (error) {
+            console.log(error);
+            return results;
+        }
 
         completions.choices.forEach((c) => {
             if (c.message === undefined) {
