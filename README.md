@@ -7,6 +7,12 @@ To create a chatbot that is specifically trained on the Azure SDK documentation 
 - Front end chat application
 - Server interacting with the Azure OpenAI SDK
 
+## Commands
+### Client
+    - `npm run dev` - run the development server
+### Server
+    - `npm run start` - run the server
+
 ## References
 
 - [vitejs.dev](https://vitejs.dev/guide/)
