@@ -1,4 +1,4 @@
-import { ChatOpenAI } from "langchain/chat_models/openai";
+import { AzureOpenAIInput, ChatOpenAI } from "langchain/chat_models/openai";
 import { AIChatMessage, BaseChatMessage, HumanChatMessage, SystemChatMessage } from "langchain/schema";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { ConversationalRetrievalQAChain } from "langchain/chains";
@@ -10,6 +10,7 @@ import { TextLoader } from "langchain/document_loaders/fs/text";
 import { BufferMemory } from "langchain/memory";
 import { Message } from "./models";
 import path from "path";
+import { DocumentLoader } from "langchain/dist/document_loaders/base";
 
 export class AIClient {
     private readonly max_tokens: number = 2048;
@@ -17,55 +18,59 @@ export class AIClient {
 
     private readonly client: ChatOpenAI;
     private readonly modelOrDeploymentName: string;
-    private readonly loader: DirectoryLoader;
-    private readonly documents: Promise<Document<Record<string, any>>[]>;
     private readonly vectorStore: Promise<HNSWLib>;
+    private readonly documentLoader: DocumentLoader;
+
+    private readonly azureAIInput: AzureOpenAIInput;
     private readonly chain: Promise<ConversationalRetrievalQAChain>;
 
     constructor($endpoint: string, $instance: string, $key: string, $model: string, $documentDirectory: string) {
-        this.client = new ChatOpenAI({
-            temperature: 0.9,
+        this.modelOrDeploymentName = $model;
+        this.azureAIInput = {
             azureOpenAIApiKey: $key,
             azureOpenAIApiInstanceName: $instance,
             azureOpenAIApiDeploymentName: $model,
             azureOpenAIApiVersion: "2023-06-01-preview",
-            openAIApiKey: $key,
-        });
-        this.modelOrDeploymentName = $model;
-        this.loader = new DirectoryLoader($documentDirectory, {
+        };
+        this.client = new ChatOpenAI(this.azureAIInput);
+        this.documentLoader = new DirectoryLoader($documentDirectory, {
             ".md": (path) => new TextLoader(path),
             ".ts": (path) => new TextLoader(path),
             ".js": (path) => new TextLoader(path),
         });
 
-        this.documents = this.loader.load();
-        this.vectorStore = this.documents.then((docs) => {
-            return HNSWLib.fromDocuments(docs, new OpenAIEmbeddings({
-                azureOpenAIApiKey: $key,
-                azureOpenAIApiInstanceName: $instance,
-                azureOpenAIApiDeploymentName: $model,
-                azureOpenAIApiVersion: "2023-06-01-preview",
-                openAIApiKey: $key,
-            }));
-        });
-        this.chain = this.vectorStore.then(async (store) => {
-            return ConversationalRetrievalQAChain.fromLLM(
-                this.client,
-                store.asRetriever(),
-                {
-                    memory: new BufferMemory({
-                        memoryKey: "chat_history", // Must be set to "chat_history"
-                    }),
-                }
-            );
-        }).catch((err) => {
-            console.log("Error while fetching chain.")
-            console.log(err);
+        this.chain = this.initialize();
+    }
 
-            console.log("--------------------");
-            console.log(err.response.data.error);
-            throw err;
-        });
+    private async initialize(): Promise<ConversationalRetrievalQAChain> {
+        let documents: Document<Record<string, any>>[];
+        try {
+            documents = await this.documentLoader.load();
+        } catch (error) {
+            console.log("Error loading documents.");
+            console.log(error);
+            return Promise.reject(error);
+        }
+
+        let vectorStore;
+        try {
+           vectorStore = await HNSWLib.fromDocuments(documents,
+                new OpenAIEmbeddings(this.azureAIInput));
+        } catch (error) {
+            console.log("Error loading vector store.");
+            console.log(error);
+            return Promise.reject(error);
+        }
+
+        return ConversationalRetrievalQAChain.fromLLM(
+            this.client,
+            vectorStore.asRetriever(),
+            {
+                memory: new BufferMemory({
+                    memoryKey: "chat_history", // Must be set to "chat_history"
+                }),
+            }
+        );
     }
 
     async getSamples($inputConversation: Message[]): Promise<void> {
