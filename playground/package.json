@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.1.4",
+    "hnswlib-node": "^1.4.2",
     "langchain": "^0.0.92",
     "ts-node": "^10.9.1"
   },

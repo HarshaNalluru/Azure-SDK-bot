@@ -6,7 +6,7 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { BufferMemory } from "langchain/memory";
 
 import * as fs from "fs";
-import { config } from 'dotenv';
+import { config } from "dotenv";
 config();
 
 export const run = async () => {
@@ -14,20 +14,29 @@ export const run = async () => {
     const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
     const docs = await textSplitter.createDocuments([text]);
     const secrets = {
-        azureOpenAIApiKey: process.env["OPEN_API_KEY"],
-        azureOpenAIApiInstanceName: process.env["OPEN_AI_INSTANCE"],
-        azureOpenAIApiDeploymentName: process.env["OPEN_AI_MODEL"],
-        azureOpenAIApiVersion: "2023-06-01-preview",
-    }
-    const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings({ ...secrets }));
-    console.log(process.env["OPEN_API_KEY"]);
+        azureOpenAIApiKey: process.env["AZURE_OPENAI_API_KEY"],
+        azureOpenAIApiInstanceName: process.env["AZURE_OPENAI_API_INSTANCE_NAME"],
+        azureOpenAIApiDeploymentName: process.env["AZURE_OPENAI_API_DEPLOYMENT_NAME"],
+        azureOpenAIApiVersion: "2023-05-15",
+    };
+
+    console.log("Vector store to be created");
+    const vectorStore = await HNSWLib.fromDocuments(
+        docs,
+        new OpenAIEmbeddings({
+            batchSize: 1
+        })
+    );
+    console.log("Vector store created");
     const fasterModel = new ChatOpenAI({
         ...secrets,
-        modelName: process.env["OPEN_AI_MODEL_3"] //"gpt-3.5-turbo",
+        azureOpenAIApiDeploymentName: process.env["OPEN_AI_MODEL_3"],
+        modelName: process.env["OPEN_AI_MODEL_3"], //"gpt-3.5-turbo",
     });
     const slowerModel = new ChatOpenAI({
         ...secrets,
-        modelName: process.env["OPEN_AI_MODEL"] //"gpt-4",
+        azureOpenAIApiDeploymentName: process.env["OPEN_AI_MODEL"],
+        modelName: process.env["OPEN_AI_MODEL"], //"gpt-4",
     });
     const chain = ConversationalRetrievalQAChain.fromLLM(
         slowerModel,
@@ -45,6 +54,7 @@ export const run = async () => {
             },
         }
     );
+
     /* Ask it a question */
     const question = "What did the president say about Justice Breyer?";
     const res = await chain.call({ question });
@@ -52,6 +62,7 @@ export const run = async () => {
 
     const followUpRes = await chain.call({ question: "Was that nice?" });
     console.log(followUpRes);
+
 };
 
 run().catch(console.error);
