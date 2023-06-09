@@ -16,6 +16,7 @@ To create a chatbot that is specifically trained on the Azure SDK documentation 
 ## References
 
 - [vitejs.dev](https://vitejs.dev/guide/)
+- [stackblitz.com editor](https://stackblitz.com/edit/vitejs-vite-icfgfs?file=src%2FApp.tsx,package.json,index.html&terminal=dev)
 - [github.com/chatscope](https://github.com/chatscope/chat-ui-kit-react)
 - [github.com/coopercodes](https://github.com/coopercodes/ReactChatGPTChatbot/blob/main)
 - [handling-cors-with-node-js/](https://stackabuse.com/handling-cors-with-node-js/)

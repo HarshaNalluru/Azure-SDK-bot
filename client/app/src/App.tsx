@@ -9,6 +9,14 @@ import {
   MessageInput,
   TypingIndicator,
 } from "@chatscope/chat-ui-kit-react";
+import { MessageDirection } from "@chatscope/chat-ui-kit-react/src/types/unions";
+
+interface AppMessage {
+  message: string;
+  sender: string;
+  direction: MessageDirection;
+  position: "normal";
+}
 
 function App() {
   const [typing, setTyping] = useState(false);
@@ -16,14 +24,17 @@ function App() {
     {
       message: "Hello, I'm Azure SDK chat bot",
       sender: "bot",
+      direction: "incoming" as MessageDirection,
+      position: "normal" as const,
     },
   ]);
 
-  const handleSend = async (message) => {
+  const handleSend = async (message: string) => {
     const newMessage = {
       message: message,
       sender: "user",
-      direction: "outgoing",
+      direction: "outgoing" as MessageDirection,
+      position: "normal" as const,
     };
     const newMessages = [...messages, newMessage]; // all old messages + new message
     // update messages state
@@ -34,7 +45,7 @@ function App() {
     await processMessageToServer(newMessages);
   };
 
-  async function processMessageToServer(chatMessages) {
+  async function processMessageToServer(chatMessages: AppMessage[]) {
     console.log("message sent: \n", chatMessages);
     const response = await fetch("http://localhost:8080/sample_response", {
       method: "POST",
@@ -51,6 +62,8 @@ function App() {
       {
         message: data.val,
         sender: "bot",
+        direction: "incoming" as MessageDirection,
+        position: "normal" as const,
       },
     ]);
   }
@@ -70,7 +83,10 @@ function App() {
                 return <Message model={message} key={index} />;
               })}
             </MessageList>
-            <MessageInput placeholder="Type your message..." onSend={handleSend} />
+            <MessageInput
+              placeholder="Type your message..."
+              onSend={handleSend}
+            />
           </ChatContainer>
         </MainContainer>
       </div>
