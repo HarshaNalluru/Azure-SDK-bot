@@ -20,3 +20,4 @@ To create a chatbot that is specifically trained on the Azure SDK documentation 
 - [github.com/chatscope](https://github.com/chatscope/chat-ui-kit-react)
 - [github.com/coopercodes](https://github.com/coopercodes/ReactChatGPTChatbot/blob/main)
 - [handling-cors-with-node-js/](https://stackabuse.com/handling-cors-with-node-js/)
+- [text_splitters](https://python.langchain.com/en/latest/modules/indexes/text_splitters/examples/code_splitter.html#js)
