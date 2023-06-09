@@ -23,7 +23,7 @@ function App() {
   const [messages, setMessages] = useState([
     {
       message: "Hello, I'm Azure SDK chat bot",
-      sender: "system",
+      sender: "assistant",
       direction: "incoming" as MessageDirection,
       position: "normal" as const,
     },
@@ -61,7 +61,7 @@ function App() {
       ...chatMessages,
       {
         message: data.samples[0].message,
-        sender: "system",
+        sender: "assistant",
         direction: "incoming" as MessageDirection,
         position: "normal" as const,
       },

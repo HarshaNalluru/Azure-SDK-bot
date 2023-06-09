@@ -16,7 +16,7 @@ export class AIClient {
             const m: Message = $conversation[i];
 
             prompts.push({
-                role: m.sender === "bot" ? "bot" : "user",
+                role: m.sender === "assistant" ? "assistant" : "user",
                 content: m.message
             });
         }
