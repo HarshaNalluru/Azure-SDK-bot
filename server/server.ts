@@ -12,7 +12,7 @@ const port = 8080;
 const TEST_SERVER_URL = `http://localhost:${port}`;
 
 const endpoint: string = process.env.OPEN_API_ENDPOINT || "";
-const key : string = process.env.OPEN_API_KEY || "";
+const key: string = process.env.OPEN_API_KEY || "";
 const model: string = process.env.OPEN_AI_MODEL || "text-davinci-003";
 
 const client = new AIClient(endpoint, key, model);
