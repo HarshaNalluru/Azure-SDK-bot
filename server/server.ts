@@ -11,11 +11,17 @@ const app = express();
 const port = 8080;
 const TEST_SERVER_URL = `http://localhost:${port}`;
 
-const endpoint: string = process.env.OPEN_API_ENDPOINT || "";
-const key: string = process.env.OPEN_API_KEY || "";
-const model: string = process.env.OPEN_AI_MODEL || "text-davinci-003";
+const endpoint: string = process.env.AZURE_OPENAI_API_ENDPOINT || "";
+const key: string = process.env.AZURE_OPENAI_API_KEY || "";
+const model: string = process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME || "text-davinci-003";
+const instance: string = process.env.AZURE_OPENAI_API_INSTANCE_NAME || "";
+const documentDirectory: string = 'E:\\git\\azure-sdk-for-js\\sdk\\eventhub\\event-hubs';
 
-const client = new AIClient(endpoint, key, model);
+console.log(`endpoint: ${endpoint}`);
+console.log(`key: ${key}`);
+console.log(`model: ${model}`);
+
+const client = new AIClient(endpoint, instance, key, model, documentDirectory);
 
 // app.use(express.json());
 app.use(express.text());
@@ -36,7 +42,6 @@ app.post("/question", async (req, res) => {
     console.log(req.body);
 
     const conversation: Array<Message> = JSON.parse(req.body);
-
     console.log(`conversation length: ${conversation.length}`);
     const samples = await client.getSamples(conversation);
     res.send({ samples });
