@@ -23,7 +23,7 @@ function App() {
   const [messages, setMessages] = useState([
     {
       message: "Hello, I'm Azure SDK chat bot",
-      sender: "bot",
+      sender: "system",
       direction: "incoming" as MessageDirection,
       position: "normal" as const,
     },
@@ -47,7 +47,7 @@ function App() {
 
   async function processMessageToServer(chatMessages: AppMessage[]) {
     console.log("message sent: \n", chatMessages);
-    const response = await fetch("http://localhost:8080/sample_response", {
+    const response = await fetch("http://localhost:8080/question", {
       method: "POST",
       body: JSON.stringify(chatMessages),
     });
@@ -60,8 +60,8 @@ function App() {
     setMessages([
       ...chatMessages,
       {
-        message: data.val,
-        sender: "bot",
+        message: data.samples[0].message,
+        sender: "system",
         direction: "incoming" as MessageDirection,
         position: "normal" as const,
       },
