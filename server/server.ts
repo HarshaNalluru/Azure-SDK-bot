@@ -2,8 +2,8 @@
 // Licensed under the MIT license.
 
 import 'dotenv/config';
-import express from "express";
-import cors from "cors";
+import * as express from "express";
+import * as cors from "cors";
 import { AIClient } from "./aiclient";
 import { Message } from './models';
 
